@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import User
 
 
 class MailingRecipient(models.Model):           # Получатель рассылки
@@ -38,6 +39,7 @@ class Sending(models.Model):           # Рассылка
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='created')           # статус
     message = models.ForeignKey(Message, on_delete=models.SET_NULL)           # Сообщение (внешн.ключ на модель Сообщение)
     recipient = models.ManyToManyField(MailingRecipient)                      # Получатели (связь с моделью Получатель)
+    owner = models.ForeignKey(User, verbose_name="Владелец", help_text="Укажите владельца рассылки", blank=True, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.status

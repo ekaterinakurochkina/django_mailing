@@ -1,7 +1,7 @@
 from xmlrpc.client import Boolean
 from django.db.models import BooleanField
 from django import forms
-# from .models import Category, Product
+from .models import Sending, Message
 from django.core.exceptions import ValidationError
 
 forbidden = ['казино', 'криптовалюта', 'крипта', 'биржа',
@@ -17,10 +17,10 @@ class StyleFormMixin:
                 field.widget.attrs['class'] = "form-class"
 
 
-class MessageForm(StyleFormMixin, forms.ModelForm):
+class SendingForm(StyleFormMixin, forms.ModelForm):
     class Meta:
-        model = Product
-#         fields = ['name', 'description', 'image', 'category', 'price', 'created_at', 'is_published','owner']
+        model = Sending
+        fields = ['status', 'recipient', 'message','owner']
 #         exclude = ['created_at', 'updated_at']
 
 
