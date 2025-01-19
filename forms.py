@@ -4,8 +4,8 @@ from django import forms
 from .models import Sending, Message
 from django.core.exceptions import ValidationError
 
-forbidden = ['казино', 'криптовалюта', 'крипта', 'биржа',
-             'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
+# forbidden = ['казино', 'криптовалюта', 'крипта', 'биржа',
+#              'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
 
 class StyleFormMixin:
     def __init__(self, *args, **kwargs):
@@ -15,6 +15,7 @@ class StyleFormMixin:
                 field.widget.attrs['class']="form-check-input"
             else:
                 field.widget.attrs['class'] = "form-class"
+                field.widget.attrs["placeholder"] = field.label
 
 
 class SendingForm(StyleFormMixin, forms.ModelForm):

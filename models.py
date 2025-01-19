@@ -18,7 +18,7 @@ class MailingRecipient(models.Model):           # Получатель расс�
 
 class Message(models.Model):          #   Сообщение
     subject = models.CharField(max_length=300, verbose_name='Тема письма')           # тема письма
-    message = models.TextField(verbose_name='Тело письма', blank=True)           # тело письма
+    message_body = models.TextField(verbose_name='Тело письма', blank=True)           # тело письма
 
     def __str__(self):
         return self.subject
@@ -35,9 +35,10 @@ class Sending(models.Model):           # Рассылка
         ('created', 'Создана'),
         ('launched', 'Запущена'),
         ('completed', 'Завершена'),
+        ('canceled', 'Отменена')
     ]
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='created')           # статус
-    message = models.ForeignKey(Message, on_delete=models.SET_NULL)           # Сообщение (внешн.ключ на модель Сообщение)
+    message = models.ForeignKey(Message, on_delete=models.PROTECT)           # Сообщение (внешн.ключ на модель Сообщение)
     recipient = models.ManyToManyField(MailingRecipient)                      # Получатели (связь с моделью Получатель)
     owner = models.ForeignKey(User, verbose_name="Владелец", help_text="Укажите владельца рассылки", blank=True, null=True, on_delete=models.SET_NULL)
 
@@ -48,6 +49,9 @@ class Sending(models.Model):           # Рассылка
         verbose_name = 'Рассылка'
         verbose_name_plural = 'Рассылки'
         ordering = ['status']
+        permissions = [
+            ("can_canceled_sending", "Can canceled sending")
+        ]
 
 
 class MailingAttempt(models.Model):           # Попытка рассылки
@@ -58,7 +62,7 @@ class MailingAttempt(models.Model):           # Попытка рассылки
     ]
     status_attempt = models.CharField(max_length=15, choices=STATUS_CHOICES, default='unsuccessful')      # Статус: успешно/неуспешно
     answer = models.TextField(blank=True, null=True)                                       # ответ почтового сервера
-    sending = models.ForeignKey(Sending, on_delete=models.SET_NULL)               # рассылка (внешн.ключ на модель Рассылка)
+    sending = models.ForeignKey(Sending, on_delete=models.PROTECT)               # рассылка (внешн.ключ на модель Рассылка)
 
     def __str__(self):
         return self.status_attempt
